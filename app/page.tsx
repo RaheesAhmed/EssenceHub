@@ -1,5 +1,6 @@
 "use client"
 import AIDescription from "@/components/AIDescription";
+import Hero from "@/components/Hero";
 import NotesSelection from "@/components/NotesSelection";
 import OrderSummary from "@/components/OrderSummary";
 import RecommendedNotes from "@/components/RecommendedNotes";
@@ -35,7 +36,8 @@ const Home = () => {
       <main className="container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold text-center mb-12 text-primary-800">Customize Your Perfume</h1>
         <div className="space-y-16">
-          <NotesSelection />
+          <Hero />
+          {/* <NotesSelection /> */}
           {/* <RecommendedNotes
             selectedNotes={selectedNotes}
             onAddNote={handleNoteSelect}
