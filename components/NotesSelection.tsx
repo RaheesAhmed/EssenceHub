@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { Search, X } from 'lucide-react'
+import AIDescription from './AIDescription'
 
 type Note = {
     id: string
@@ -99,6 +100,7 @@ const NotesSelection = () => {
                     ))}
                 </div>
             </div>
+            <AIDescription selectedNotes={selectedNotes} />
         </div>
     )
 }
