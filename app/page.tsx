@@ -36,12 +36,12 @@ const Home = () => {
         <h1 className="text-4xl font-bold text-center mb-12 text-primary-800">Customize Your Perfume</h1>
         <div className="space-y-16">
           <NotesSelection />
-          <RecommendedNotes
+          {/* <RecommendedNotes
             selectedNotes={selectedNotes}
             onAddNote={handleNoteSelect}
           />
           <AIDescription selectedNotes={selectedNotes} />
-          <OrderSummary selectedNotes={selectedNotes} />
+          <OrderSummary selectedNotes={selectedNotes} /> */}
         </div>
       </main>
     </div>
