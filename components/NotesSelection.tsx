@@ -1,51 +1,23 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Search, X } from 'lucide-react'
-import AIDescription from './AIDescription'
+import { Note, notes, categories } from '@/data/notes'
 
-type Note = {
-    id: string
-    name: string
-    category: string
+type SelectedNotesProps = {
+    selectedNotes: Note[]
+    onNoteSelect: (note: Note) => void
+    onNoteRemove: (note: Note) => void
 }
 
-const dummyNotes: Note[] = [
-    { id: '1', name: 'Lavender', category: 'Floral' },
-    { id: '2', name: 'Vanilla', category: 'Sweet' },
-    { id: '3', name: 'Sandalwood', category: 'Woody' },
-    { id: '4', name: 'Bergamot', category: 'Citrus' },
-    { id: '5', name: 'Jasmine', category: 'Floral' },
-    // Add more dummy notes here...
-]
-
-const NotesSelection = () => {
-    const [notes, setNotes] = useState<Note[]>(dummyNotes)
-    const [selectedNotes, setSelectedNotes] = useState<Note[]>([])
+const NotesSelection = ({ selectedNotes, onNoteSelect, onNoteRemove }: SelectedNotesProps) => {
     const [searchTerm, setSearchTerm] = useState('')
     const [filter, setFilter] = useState<string | null>(null)
-
-    useEffect(() => {
-        // In a real application, you would fetch notes from an API here
-        // For now, we're using the dummy data
-    }, [])
 
     const filteredNotes = notes.filter(note =>
         note.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
         (!filter || note.category === filter)
     )
-
-    const handleNoteSelect = (note: Note) => {
-        if (selectedNotes.length < 60 && !selectedNotes.find(n => n.id === note.id)) {
-            setSelectedNotes([...selectedNotes, note])
-        }
-    }
-
-    const handleNoteRemove = (note: Note) => {
-        setSelectedNotes(selectedNotes.filter(n => n.id !== note.id))
-    }
-
-    const categories = Array.from(new Set(notes.map(note => note.category)))
 
     return (
         <div className="max-w-4xl mx-auto p-4">
@@ -76,21 +48,25 @@ const NotesSelection = () => {
                 {filteredNotes.map(note => (
                     <button
                         key={note.id}
-                        onClick={() => handleNoteSelect(note)}
+                        onClick={() => onNoteSelect(note)}
                         className="p-2 border rounded-md hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        title={note.description}
                     >
-                        {note.name}
+                        {note.image && <img src={note.image} alt={note.name} className="w-full h-32 object-cover mb-2" />}
+                        <span className="font-medium">{note.name}</span>
+                        <span className="text-xs block text-gray-500">{note.category}</span>
+                        <span className="text-xs block text-gray-500">{note.placement}</span>
                     </button>
                 ))}
             </div>
             <div>
-                <h3 className="text-xl font-semibold mb-2">Selected Notes ({selectedNotes.length}/60)</h3>
+                <h3 className="text-xl font-semibold mb-2">Selected Notes ({selectedNotes.length}/3)</h3>
                 <div className="flex flex-wrap gap-2">
                     {selectedNotes.map(note => (
                         <div key={note.id} className="flex items-center bg-primary-100 rounded-full px-3 py-1">
                             <span>{note.name}</span>
                             <button
-                                onClick={() => handleNoteRemove(note)}
+                                onClick={() => onNoteRemove(note)}
                                 className="ml-2 focus:outline-none"
                                 aria-label={`Remove ${note.name}`}
                             >
@@ -100,7 +76,6 @@ const NotesSelection = () => {
                     ))}
                 </div>
             </div>
-            <AIDescription selectedNotes={selectedNotes} />
         </div>
     )
 }

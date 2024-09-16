@@ -5,6 +5,8 @@ type Note = {
     id: string
     name: string
     category: string
+    placement: string
+    description: string
 }
 
 type RecommendedNotesProps = {
@@ -30,18 +32,27 @@ const RecommendedNotes = ({ selectedNotes, onAddNote }: RecommendedNotesProps) =
         setError(null)
 
         try {
-            // In a real application, you would make an API call to your AI service here
-            // For demonstration, we'll simulate an API call with a timeout and dummy data
-            await new Promise(resolve => setTimeout(resolve, 1500))
+            const response = await fetch('/api/recommend-notes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    notes: selectedNotes.map(note => ({
+                        name: note.name,
+                        category: note.category,
+                        placement: note.placement,
+                        description: note.description
+                    }))
+                }),
+            })
 
-            const dummyRecommendations: Note[] = [
-                { id: 'rec1', name: 'Bergamot', category: 'Citrus' },
-                { id: 'rec2', name: 'Vanilla', category: 'Sweet' },
-                { id: 'rec3', name: 'Sandalwood', category: 'Woody' },
-                { id: 'rec4', name: 'Jasmine', category: 'Floral' },
-            ]
+            if (!response.ok) {
+                throw new Error('Failed to generate recommendations')
+            }
 
-            setRecommendedNotes(dummyRecommendations)
+            const data = await response.json()
+            setRecommendedNotes(data.recommendations)
         } catch (err) {
             setError('Failed to generate recommendations. Please try again.')
         } finally {

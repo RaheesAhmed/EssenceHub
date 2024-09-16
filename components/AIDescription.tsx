@@ -1,12 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { Loader2 } from 'lucide-react'
-
-type Note = {
-    id: string
-    name: string
-    category: string
-}
+import { Note } from '@/data/notes'
 
 type AIDescriptionProps = {
     selectedNotes: Note[]
@@ -30,14 +25,27 @@ const AIDescription = ({ selectedNotes }: AIDescriptionProps) => {
         setError(null)
 
         try {
-            // In a real application, you would make an API call to your AI service here
-            // For demonstration, we'll simulate an API call with a timeout
-            await new Promise(resolve => setTimeout(resolve, 2000))
+            const response = await fetch('/api/generate-description', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    notes: selectedNotes.map(note => ({
+                        name: note.name,
+                        category: note.category,
+                        placement: note.placement,
+                        description: note.description
+                    }))
+                }),
+            })
 
-            const noteNames = selectedNotes.map(note => note.name).join(', ')
-            const aiGeneratedDescription = `Your custom fragrance is a harmonious blend of ${noteNames}. This unique scent opens with a burst of freshness, gradually revealing a complex heart of floral and woody notes. As it settles, the fragrance evolves into a warm, inviting base that lingers on the skin. This personalized perfume is a true reflection of your individual style and preferences.`
+            if (!response.ok) {
+                throw new Error('Failed to generate description')
+            }
 
-            setDescription(aiGeneratedDescription)
+            const data = await response.json()
+            setDescription(data.description)
         } catch (err) {
             setError('Failed to generate description. Please try again.')
         } finally {
