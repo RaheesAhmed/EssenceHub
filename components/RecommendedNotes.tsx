@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { Loader2, Plus } from 'lucide-react'
+import { Note } from '@/data/notes'
 
-type Note = {
-    id: string
-    name: string
-    category: string
-    placement: string
-    description: string
-}
+type NoteWithIntensity = Note & { intensity: number };
 
 type RecommendedNotesProps = {
-    selectedNotes: Note[]
+    selectedNotes: NoteWithIntensity[]
     onAddNote: (note: Note) => void
 }
 

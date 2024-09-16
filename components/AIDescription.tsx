@@ -1,10 +1,13 @@
 "use client"
 import React, { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
 import { Note } from '@/data/notes'
 
+type NoteWithIntensity = Note & { intensity: number };
+
 type AIDescriptionProps = {
-    selectedNotes: Note[]
+    selectedNotes: NoteWithIntensity[]
 }
 
 const AIDescription = ({ selectedNotes }: AIDescriptionProps) => {
@@ -34,8 +37,7 @@ const AIDescription = ({ selectedNotes }: AIDescriptionProps) => {
                     notes: selectedNotes.map(note => ({
                         name: note.name,
                         category: note.category,
-                        placement: note.placement,
-                        description: note.description
+                        placement: note.placement
                     }))
                 }),
             })
@@ -58,26 +60,31 @@ const AIDescription = ({ selectedNotes }: AIDescriptionProps) => {
     }
 
     return (
-        <div className="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold mb-4 text-primary-600">Your Custom Fragrance</h2>
+        <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="max-w-2xl mx-auto mt-8 p-6 bg-secondary-100 rounded-lg shadow-lg"
+        >
+            <h2 className="text-2xl font-bold mb-4 text-secondary-800">Your Custom Fragrance</h2>
             {isLoading ? (
                 <div className="flex items-center justify-center h-32">
-                    <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
+                    <Loader2 className="w-8 h-8 animate-spin text-secondary-500" />
                 </div>
             ) : error ? (
                 <div className="text-red-500">{error}</div>
             ) : description ? (
                 <div>
-                    <p className="text-gray-700 leading-relaxed">{description}</p>
+                    <p className="text-secondary-700 leading-relaxed">{description}</p>
                     <button
                         onClick={generateDescription}
-                        className="mt-4 px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 transition-colors"
+                        className="mt-4 px-4 py-2 bg-secondary-500 text-white rounded hover:bg-secondary-600 focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-opacity-50 transition-colors"
                     >
                         Regenerate Description
                     </button>
                 </div>
             ) : null}
-        </div>
+        </motion.div>
     )
 }
 
